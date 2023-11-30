@@ -1,5 +1,12 @@
 #!/bin/bash
 # this script copies data into separate folders based on a csv file
+# INPUT: 
+#   - data_dir: location of downloading sequencing data
+#   - projects_csv: location of csv containing sample names and associated projects
+#   - wrkdir: directory where the data will be moved to (subfolders named after projects)
+# OUTPUT: 
+#   - Project folder[s] containing fastq, checksum, and .rtf files split based on .csv input
+#   - log file with information on stderr / stdout 
 #---------------fill out variables ------------------------------------------------#
 data_dir="/hpc/group/kimlab/Qiime2/seqOrder8799"
 # must be full path of where the data is stored
@@ -8,9 +15,9 @@ projects_csv="sorting.csv"
 # folders will split the data into the different projects so name accordingly
 # script skips the first line. 
 # Assumes sampleID is in the first column and project Name is in the second column
-# ---------------- automatic variables --------------------------------------------#
 wrkdir="/hpc/group/kimlab/Qiime2" 
 # directory that leads to the directory where the split data folders will go
+# ---------------- automatic variables --------------------------------------------#
 current_time=$(date "+%Y%m%d_%H%M%S")
 # acquire current time
 data_fol=${data_dir##*/}
@@ -22,10 +29,9 @@ READMEfile=$(find $data_dir/*.rtf)
 
 # ---------------- script start ------------------------------------- # 
 exec &>> log/movefiles_"${data_fol}"_"${current_time}".log
+# all output will go to a file called movefiles_*.log 
 
-
-# Prior to running script, check that data directory contains all files expected in checksum. 
-
+# CHECKING CHECKSUMS
 
 
 declare -A FsamplePathArray
