@@ -27,13 +27,13 @@ READMEfile=$(find $data_dir/*.rtf)
 outputChk="${data_dir}/00-checksum"
 outputMv="${data_dir}/00-log"
 
-# making new output folder
-echo -e "creating new output folders" 
-mkdir -p "${data_dir}"/{"00-log","00-checksum"}
-
 # ---------------- script start ------------------------------------- # 
 exec &>> "${data_dir}"/00-log/movefiles_"${current_time}".log
 # all output will go to a file called movefiles_*.log 
+
+# making new output folder
+echo -e "creating new output folders" 
+mkdir -p "${data_dir}"/{"00-log","00-checksum"}
 
 # CHECKING CHECKSUMS ------------------------------------------------- #
 
@@ -48,8 +48,7 @@ then
         if cmp -s "${outputChk}/dwnld_${current_time}.checksum" "${outputChk}/"dwnld.checksum; then
             echo "The md5sum files are identical."
             if cmp -s "$checksumFile" "${outputChk}/seq.checksum"; then 
-                echo "The sequencing checksum files are also identicial. No need to continue script."
-                exit 0 
+                echo "The sequencing checksum files are also identicial."
             else
                 echo "The sequencing checksum files are not identical. Need to test checksums again. Deleting old output folders"
                 rm -Rfv -- "$outputChk"
@@ -205,7 +204,7 @@ do
             fi
                 # add readme file if not in the existing folder
         else 
-            echo -e "$project data folder does not exist, making now..." 
+            echo -e "$project data folder does not exist, making now..." >> "${outputMv}"/folders_created.txt
             mkdir -p "$NewPath"
             echo -e "adding checksum and README to data folder" 
             cp "$checksumFile" "$NewPath"
@@ -223,10 +222,10 @@ if [ "${FsamplePathArray[$sampleID]+_}" ]
             if [ ! -f "$newfileF" ]; then
             cp "$OldPathF" "$NewPath"
             else 
-            echo "$newfileF already exists" 
+            echo "$newfileF already exists" >> "${outputMv}"/existing_names.txt
             fi
         else
-            echo "$sampleID forward fastq.gz does not exist in data folder"
+            echo "$sampleID forward fastq.gz does not exist in data folder" >> "${outputMv}"/no_data_names.txt 
     fi
 if [ "${RsamplePathArray[$sampleID]+_}" ]
     then 
@@ -237,10 +236,10 @@ if [ "${RsamplePathArray[$sampleID]+_}" ]
             if [ ! -f "$newfileR" ]; then
             cp "$OldPathR" "$NewPath"
             else 
-            echo "$newfileR already exists" 
+            echo "$newfileR already exists" >> "${outputMv}"/existing_names.txt
             fi
         else
-            echo "$sampleID reverse fastq.gz does not exist in data folder"
+            echo "$sampleID reverse fastq.gz does not exist in data folder" >> "${outputMv}"/no_data_names.txt 
     fi
 # Test whether sampleID exists in the associative array 
 # If it exists, copy the file to the new folder 
