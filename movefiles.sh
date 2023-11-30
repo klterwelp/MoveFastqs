@@ -20,21 +20,19 @@ wrkdir="/hpc/group/kimlab/Qiime2"
 # ---------------- automatic variables --------------------------------------------#
 current_time=$(date "+%Y%m%d_%H%M%S")
 # acquire current time
-data_fol=${data_dir##*/}
-# last folder name of data_dir path 
 checksumFile=$(find $data_dir/*.checksum)
 # checksum file in the data directory
 READMEfile=$(find $data_dir/*.rtf)
 # readme file in the data directory 
-outputChk="{$data_dir}/00-checksum"
-outputMv="{$data_dir}/00-log"
+outputChk="${data_dir}/00-checksum"
+outputMv="${data_dir}/00-log"
 
 # making new output folder
 echo -e "creating new output folders" 
-mkdir -p "{$data_dir}"/{"00-log","00-checksum"}
+mkdir -p "${data_dir}"/{"00-log","00-checksum"}
 
 # ---------------- script start ------------------------------------- # 
-exec &>> "{$data_dir}"/log/movefiles_"${current_time}".log
+exec &>> "${data_dir}"/00-log/movefiles_"${current_time}".log
 # all output will go to a file called movefiles_*.log 
 
 # CHECKING CHECKSUMS ------------------------------------------------- #
