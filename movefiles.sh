@@ -1,13 +1,24 @@
 #!/bin/bash
 # this script copies data into separate folders based on a csv file
 
-data_dir="/hpc/group/kimlab/Qiime2/seqOrder8582"
+data_dir="/hpc/group/kimlab/Qiime2/seqOrder8799"
 # must be full path of where the data is stored
-projects_csv="pool-table.csv"
+projects_csv="sorting.csv"
 # csv that has sample-id and folders as two columns. 
 # folders will split the data into the different projects so name accordingly
 wrkdir="/hpc/group/kimlab/Qiime2" 
 # directory that leads to the directory where the split data folders will go
+checksumFile=$(find $data_dir/*.checksum)
+# checksum file in the data directory
+READMEfile=$(find $data_dir/*.rtf)
+# readme file in the data directory 
+
+
+
+# Prior to running script, check that data directory contains all files expected in checksum. 
+
+
+
 declare -A FsamplePathArray
 declare -A RsamplePathArray
 # start declarative arrays that will hold the sample id and path information depending on R1 or R2
@@ -41,15 +52,30 @@ while IFS=',' read -r sampleID project
 do
     project=$(echo "$project" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
     # remove trailing spaces from folder name and sampleID
-     NewPath="$wrkdir/$project/data" 
+    NewPath="$wrkdir/$project/data" 
+    checksumProj=$(find "$wrkdir/$project/data"/*.checksum)
+    READMEProj=$(find "$wrkdir/$project/data"/*.rtf)
         if [ -d "$NewPath" ]; then 
             echo -e "$project data folder exists" 
+            echo -e "adding checksum and README to data folder, if not added" 
+            if [ -f "$checksumProj" ]; then 
+                echo -e "checksum already in folder"
+                else
+                echo -e "adding checksum to $NewPath" 
+                cp "$checksumFile" "$NewPath"
+            fi
+                # add checksum if not in the existing folder
+            if [ -f "$READMEProj" ]; then 
+                echo -e "README already in folder"
+                else 
+                echo -e "adding README to $NewPath"
+                cp "$READMEfile" "$NewPath"
+            fi
+                # add readme file if not in the existing folder
         else 
             echo -e "$project data folder does not exist, making now..." 
             mkdir -p "$NewPath"
             echo -e "adding checksum and README to data folder" 
-            checksumFile=$(find "$data_dir/*.checksum")
-            READMEfile=$(find "$data_dir/*.rtf")
             cp "$checksumFile" "$NewPath"
             cp "$READMEfile" "$NewPath"
     fi
