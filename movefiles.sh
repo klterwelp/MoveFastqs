@@ -47,6 +47,11 @@ do
         else 
             echo -e "$project data folder does not exist, making now..." 
             mkdir -p "$NewPath"
+            echo -e "adding checksum and README to data folder" 
+            checksumFile=$(find "$data_dir/*.checksum")
+            READMEfile=$(find "$data_dir/*.rtf")
+            cp "$checksumFile" "$NewPath"
+            cp "$READMEfile" "$NewPath"
     fi
 # Test whether data folder has already been created
 # If it doesn't exist, make the folder 
@@ -57,7 +62,7 @@ if [ "${FsamplePathArray[$sampleID]+_}" ]
         OldPathF="${FsamplePathArray[$sampleID]}"
         filenameF=$(basename "$OldPathF")
         newfileF="$NewPath/$filenameF"
-            if [ ! -f $newfileF ]; then
+            if [ ! -f "$newfileF" ]; then
             cp "$OldPathF" "$NewPath"
             else 
             echo "$newfileF already exists" 
