@@ -14,7 +14,7 @@ projects_csv="sorting.csv"
 # csv that has sample-id and folders as two columns. 
 # folders will split the data into the different projects so name accordingly
 # script skips the first line. 
-# Assumes sampleID is in the first column and project Name is in the second column
+# Assumes sampleID is in the first column and project folder is in the second column
 wrkdir="/hpc/group/kimlab/Qiime2" 
 # directory that leads to the directory where the split data folders will go
 # ---------------- automatic variables --------------------------------------------#
@@ -26,13 +26,18 @@ checksumFile=$(find $data_dir/*.checksum)
 # checksum file in the data directory
 READMEfile=$(find $data_dir/*.rtf)
 # readme file in the data directory 
+outputChk="{$data_dir}/00-checksum"
+outputMv="{$data_dir}/00-log"
+
+# making new output folder
+echo -e "creating new output folders" 
+mkdir -p "{$data_dir}"/{"00-log","00-checksum"}
 
 # ---------------- script start ------------------------------------- # 
-exec &>> log/movefiles_"${data_fol}"_"${current_time}".log
+exec &>> "{$data_dir}"/log/movefiles_"${current_time}".log
 # all output will go to a file called movefiles_*.log 
 
-# CHECKING CHECKSUMS
-
+# CHECKING CHECKSUMS ------------------------------------------------- #
 
 declare -A FsamplePathArray
 declare -A RsamplePathArray
