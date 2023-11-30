@@ -1,18 +1,27 @@
 #!/bin/bash
 # this script copies data into separate folders based on a csv file
-
+#---------------fill out variables ------------------------------------------------#
 data_dir="/hpc/group/kimlab/Qiime2/seqOrder8799"
 # must be full path of where the data is stored
 projects_csv="sorting.csv"
 # csv that has sample-id and folders as two columns. 
 # folders will split the data into the different projects so name accordingly
+# script skips the first line. 
+# Assumes sampleID is in the first column and project Name is in the second column
+# ---------------- automatic variables --------------------------------------------#
 wrkdir="/hpc/group/kimlab/Qiime2" 
 # directory that leads to the directory where the split data folders will go
+current_time=$(date "+%Y%m%d_%H%M%S")
+# acquire current time
+data_fol=${data_dir##*/}
+# last folder name of data_dir path 
 checksumFile=$(find $data_dir/*.checksum)
 # checksum file in the data directory
 READMEfile=$(find $data_dir/*.rtf)
 # readme file in the data directory 
 
+# ---------------- script start ------------------------------------- # 
+exec &>> log/movefiles_"${data_fol}"_"${current_time}".log
 
 
 # Prior to running script, check that data directory contains all files expected in checksum. 
